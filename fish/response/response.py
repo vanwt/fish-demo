@@ -87,26 +87,6 @@ class Xml(ResponseBase):
     content_type = "application/xml"
 
 
-class MethodNotAllowResponse(Json):
-    status_code = 405
-    msg = "Method Not Found"
-    content = {"error": "Method Not Found"}
-
-
-class NotFoundResponse(Json):
-    status_code = 404
-    msg = "Not Found Error"
-    content = {"error": "404 Not Found !"}
-
-
 class Html(ResponseBase):
     content_type = "text/html"
 
-
-class CssLoader(ResponseBase):
-    content_type = "text/css"
-    encoding = "utf-8"
-
-
-class ImageLoader(ResponseBase):
-    pass

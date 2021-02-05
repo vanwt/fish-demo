@@ -1,2 +1,1 @@
-from fish.application.app import Fish
-from .common import TemplateLoder
+from fish.application import SimpleApp

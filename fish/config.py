@@ -1,0 +1,1 @@
+METHODS = ["GET", "POST", "PUT", "DELETE"]

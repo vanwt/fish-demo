@@ -1,22 +1,21 @@
-from typing import List, Callable, Dict
-from ..router import PathMap
+from ..router import UrlMap
 from ..request import Request
-from ..response import NotFoundResponse, MethodNotAllowResponse
-from ..server import make_server
-from ..errors import MethodNoteFoundError, NotFoundError
-from ..parser import BaseParser
-from ..common import StaticLoader
+from ..response.http import NotFoundResponse, MethodNotAllowResponse
+from ..response.errors import MethodNoteFoundError, NotFoundError
+from ..serve import make_server
+from ..parsers import BaseParser
+from ..loader import StaticLoader
+from ..config import METHODS
+from typing import List, Callable, Dict
 
-METHODS = ["GET", "POST", "PUT", "DELETE"]
 
-
-class BaseApp():
+class BaseApp:
     request_class = Request
     static_url = ""
     static_dir = None
 
     def __init__(self):
-        self.routes = PathMap()
+        self.routes = UrlMap()
         self.debug = True
         self.parser_map: dict = {}
 
@@ -62,69 +61,6 @@ class BaseApp():
 
         return add_route
 
-    def get(self, path: str, parsers: List[BaseParser] = None):
-        """
-            装饰器
-            @app.get("/")
-            def test(request):
-                return "ok"
-
-            @app.post("/")
-            def test2(request):
-                return "ok"
-            加入到路由表中
-        """
-        # 解析器默认只有url解析
-        parsers = parsers if parsers else ()
-
-        # 存入解析器
-        self.parser_map[path] = parsers
-
-        def add_route(func):
-            # 加入到路由表中
-            self.add_routes(path, func, ["GET"])
-            return func
-
-        return add_route
-
-    def post(self, path: str, parsers: List[BaseParser] = None):
-        parsers = parsers if parsers else ()
-        # 存入解析器
-        self.parser_map[path] = parsers
-
-        def add_route(func):
-            # 加入到路由表中
-            self.add_routes(path, func, ["POST"])
-            return func
-
-        return add_route
-
-    def put(self, path: str, parsers: List[BaseParser] = None):
-        parsers = parsers if parsers else ()
-
-        # 存入解析器
-        self.parser_map[path] = parsers
-
-        def add_route(func):
-            # 加入到路由表中
-            self.add_routes(path, func, ["PUT"])
-            return func
-
-        return add_route
-
-    def delete(self, path: str, parsers: List[BaseParser] = None):
-        parsers = parsers if parsers else ()
-
-        # 存入解析器
-        self.parser_map[path] = parsers
-
-        def add_route(func):
-            # 加入到路由表中
-            self.add_routes(path, func, ["DELETE"])
-            return func
-
-        return add_route
-
     def get_response(self, environ: Dict, start_response: Callable):
         request = self.request_class(environ)
         # 查找存储的解析器
@@ -147,12 +83,10 @@ class BaseApp():
             resp = MethodNotAllowResponse()()
         return resp(environ, start_response)
 
-    def run(self, host="127.0.0.1", port=8000, debug=True):
-        self.debug = debug
-        make_server((host, port), self)
+    def run(self, host="127.0.0.1", port=8000, thread=False):
+
+        make_server((host, port), self, thread)
 
     def __call__(self, environ: Dict, start_response: Callable):
         # 此处要返回一个handler
         return self.get_response(environ, start_response)
-
-

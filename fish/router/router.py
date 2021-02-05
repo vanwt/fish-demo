@@ -1,8 +1,8 @@
-from .errors import MethodNoteFoundError, NotFoundError
+from fish.response.errors import MethodNoteFoundError, NotFoundError
 from typing import List, Callable
 
 
-class PathMap():
+class UrlMap:
     """
     {
         "/" : {

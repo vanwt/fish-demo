@@ -1,5 +1,6 @@
-from .parser import BaseParser, UrlParser
-from .response import ResponseBase, Json, MethodNotAllowResponse
+from fish.parsers import BaseParser, UrlParser
+from fish.response import ResponseBase, Json
+from fish.response.http import MethodNotAllowResponse
 from typing import Tuple
 
 
