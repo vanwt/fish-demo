@@ -10,7 +10,7 @@ def html():
     return "AA"
 
 
-class Url:
+class UrlTest:
 
     def __init__(self, view_id):
         self.view_id = view_id
@@ -37,7 +37,7 @@ class Url:
         return "%s.%s" % (self.path, self.method)
 
 
-class UrlMap:
+class UrlMapTest:
     METHODS = ["GET", "POST", "PUT", "DELETE"]
 
     def __init__(self):
@@ -48,7 +48,7 @@ class UrlMap:
         for url in self.maps:
             if url.view_id == view_id:
                 return url
-        url = Url(view_id)
+        url = UrlTest(view_id)
         self.maps.append(url)
         return url
 
@@ -71,6 +71,7 @@ class UrlMap:
         url_obj = self._get_url_by_id_or_create(id(view))
         url_obj.path = path
         url_obj.method = method
+        url_obj.view = view
 
     def add_url_response(self, view_id, resp_class):
         url_obj = self._get_url_by_id_or_create(view_id)
@@ -79,6 +80,12 @@ class UrlMap:
     def add_url_parser(self, view_id, parsers):
         url_obj = self._get_url_by_id_or_create(view_id)
         url_obj.parsers = parsers
+
+    def get_url(self, path) -> UrlTest or None:
+        for url in self.maps:
+            if url.path == path:
+                return url
+        return None
 
     def out(self):
         print(self.maps)
@@ -113,9 +120,9 @@ class UrlInitDict:
             print(k, v)
 
 
-class TestApp:
+class TestApp1:
     def __init__(self):
-        self.url_map = UrlMap()
+        self.url_map = UrlMapTest()
 
     def route(self, path: str, method: str):
         def add_route(func):
@@ -146,7 +153,7 @@ class TestApp:
 
 
 if __name__ == '__main__':
-    app = TestApp()
+    app = TestApp1()
 
 
     @app.route("/", "GET")

@@ -1,108 +1,83 @@
-from fish.response.errors import MethodNoteFoundError, NotFoundError
-from typing import List, Callable
+from ..parsers import UrlParser
+from ..response.response import Json
 
 
-class PathObj:
-    def __init__(self, method, view_func: Callable = None, parsers: List = None):
-        if type(method) is list:
-            self.method_view = self.method_parsers = {}
-            for m in method:
-                if view_func:
-                    self.method_view[m] = view_func
-                if parsers:
-                    self.method_parsers = parsers
-        else:
-            self.method_view = {method: view_func} if method and view_func else {}
-            self.method_parsers = {method: parsers} if method and parsers else {}
+class Url:
 
-    def set_func_parsers(self, method, view_func=None, parsers=None):
-        if view_func:
-            self.method_view[method] = view_func
+    def __init__(self, view_id):
+        self.view_id = view_id
+        self.method = None
+        self.path = None
+        self.view = None
+        self.parsers = (UrlParser,)
+        self.response = Json
 
-        if parsers:
-            self.method_parsers[method] = parsers
+    def set_path(self, path, method):
+        self.method = method
+        self.path = path
 
-    def get_view(self, method):
-        return self.method_view.get(method, None)
+    def set_resp(self, resp_class):
+        self.response = resp_class
 
-    def get_parsers(self, method) -> []:
-        return self.method_parsers.get(method, None)
+    def set_parsers(self, parsers):
+        self.parsers = parsers
 
-
-class PathRole:
-    """
-    {
-        "/" : PathObj(),
-    }
-    """
-
-    def __init__(self):
-        self.paths = {}
-
-    def add_view(self, path, view_func, method):
-
-        path_obj = self.paths.get(path, None)
-        if not path_obj:
-            self.paths[path] = PathObj(method, view_func=view_func)
-        else:
-            path_obj.set_func_parsers(method, view_func=view_func)
-
-    def add_parser(self, path, method, parsers):
-        path_obj = self.paths.get(path, None)
-        if not path_obj:
-            self.paths[path] = PathObj(method=method, parsers=parsers)
-        else:
-            path_obj.set_func_parsers(method, parsers=parsers)
-
-    def get(self, path) -> PathObj:
-        path_obj = self.paths.get(path, None)
-        return path_obj
+    def __str__(self):
+        return "%s.%s" % (self.view.__name__, self.path)
 
     def __repr__(self):
-        return self.paths
+        return "%s.%s" % (self.path, self.method)
 
 
 class UrlMap:
-    """
-    {
-        "/" : {
-            "GET":view,
-            "POST":view2
-        }
-    }
-    """
+    METHODS = ["GET", "POST", "PUT", "DELETE"]
 
     def __init__(self):
-        self.path_map = {}
+        self.maps = []
+        self.view_funcs = []
 
-    def add(self, path: str, view: Callable, methods: List[str]):
-        """ 不存在直接创建，已存在用update """
-        if path not in self.path_map:
-            self.path_map[path] = {method: view for method in methods}
-        else:
-            self.path_map[path].update({method: view for method in methods})
+    def _get_url_by_id_or_create(self, view_id):
+        for url in self.maps:
+            if url.view_id == view_id:
+                return url
+        url = Url(view_id)
+        self.maps.append(url)
+        return url
 
-    def get(self, path: str, method: List[str]):
-        """ 根据path查找 method 字典"""
-        views = self.path_map.get(path, None)
-        # 找不到路由
-        if views is None:
-            raise NotFoundError()
-        # 找不到对应method方法
-        func_view = views.get(method, None)
-        if func_view is None:
-            raise MethodNoteFoundError()
-        return func_view
+    def check_method_and_path(self, path, method):
 
-    def __repr__(self):
-        return self.path_map
+        if method not in self.METHODS:
+            raise AttributeError("method must in {0!r}".format(self.METHODS))
+        for url in self.maps:
+            if url.path == path and url.method == method:
+                raise AttributeError("同一个url与请求类型只能声明一次")
 
+    def add_route(self, path, view, method, resp_class, parsers):
+        url_obj = self._get_url_by_id_or_create(id(view))
+        url_obj.path = path
+        url_obj.method = method
+        url_obj.response = resp_class
+        url_obj.parsers = parsers
 
-class StaticRoute():
-    def __init__(self, request):
-        pass
+    def add_url_route(self, path, view, method):
+        url_obj = self._get_url_by_id_or_create(id(view))
+        url_obj.path = path
+        url_obj.method = method
+        url_obj.view = view
 
-    def readFile(self, filename):
-        with open(filename, "r", encoding="utf-8", errors="ignore") as f:
-            data = f.read()
-        return data
+    def add_url_response(self, view_id, resp_class):
+        url_obj = self._get_url_by_id_or_create(view_id)
+        url_obj.response = resp_class
+
+    def add_url_parser(self, view_id, *parsers):
+        url_obj = self._get_url_by_id_or_create(view_id)
+        url_obj.parsers = parsers
+
+    def get_url(self, path) -> Url or None:
+        for url in self.maps:
+            if url.path == path:
+                return url
+        return None
+
+    def out(self):
+        print(self.maps)

@@ -1,9 +1,8 @@
-from fish.application.baseapp import BaseApp
-from fish.application.testapp import TestApp
+from fish.application.newapp import NewApp
 from fish.response import Json, Text
 
 # app = BaseApp()
-app = TestApp()
+app = NewApp()
 
 
 @app.response(Json)
@@ -13,4 +12,5 @@ def index(req):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", thread=True)
+    # app.run(host="0.0.0.0",port=8000)
+    app.run2(host="0.0.0.0", port=8000, thread=True)
