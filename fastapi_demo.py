@@ -8,6 +8,9 @@ app = FastAPI()
 async def req():
     return {"code": 0, "msg": "Hello Word"}
 
+@app.get("/in")
+async def req():
+    return {"code": 1, "msg": "Test Word"}
 
 if __name__ == '__main__':
     run(app, host="0.0.0.0")

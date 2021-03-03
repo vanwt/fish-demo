@@ -1,9 +1,7 @@
-from ..router.bak import PathRole
 from ..request import Request
 from ..response.http import NotFoundResponse, MethodNotAllowResponse
 from ..response.errors import MethodNoteFoundError, NotFoundError
 from ..serve import make_server
-from ..parsers import BaseParser
 from ..config import METHODS
 from typing import List, Callable, Dict
 from functools import wraps
