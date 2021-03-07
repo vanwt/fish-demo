@@ -4,7 +4,7 @@ from uvicorn.main import run
 app = FastAPI()
 
 
-@app.get("/index")
+@app.post("/index")
 async def req():
     return {"code": 0, "msg": "Hello Word"}
 

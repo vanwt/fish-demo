@@ -1,5 +1,5 @@
 import re
-from ..response.errors import NotFoundError
+from ..exception.errors import NotFoundError
 
 
 class ViewInfo:
@@ -55,7 +55,7 @@ class PathRouter:
                     if vi.path == path:
                         return vi
         else:
-            raise NotFoundError()
+            raise NotFoundError("404 Not Found")
 
     def __iter__(self):
         for i in self._map:

@@ -5,15 +5,24 @@ from typing import List
 class ResponseBase:
     status_code: int = 200
     content_type: str = "text/plain"
-    msg: str = "OK"
+    # 状态值
+    status_msg: str = "OK"
     content: str = ""
     encoding = "utf-8"
 
-    def __init__(self, content="", content_type: str = None, status: int = None, headers: List[tuple] = None,
+    def __init__(self, content=None, content_type: str = None, status: int = None, status_msg: str = None,
                  encoding: str = None):
         self.headers = []
         if content:
             self.content = content
+        if content_type:
+            self.content_type = content_type
+        if encoding:
+            self.encoding = encoding
+
+        if status_msg:
+            self.status_msg = status_msg
+
         if status is not None:
             try:
                 self.status_code = int(status)
@@ -23,12 +32,7 @@ class ResponseBase:
         if not 100 <= self.status_code <= 599:
             raise ValueError('HTTP status code must be an integer from 100 to 599.')
 
-        if content_type:
-            self.content_type = content_type
-        if encoding:
-            self.encoding = encoding
-
-    def response_text(self):
+    def encode_response(self):
         """ 数据进行转码 """
         return self.content.encode(self.encoding)
 
@@ -45,16 +49,29 @@ class ResponseBase:
         # 加入请求头
         self.headers.append(("Set-Cookie", fmt))
 
-    def __call__(self):
-        msg = "{status} {msg}".format(status=self.status_code, msg=self.msg)
+    def __call__(self, environ, start_response):
+        msg = "{0} {1}".format(self.status_code, self.status_msg)
         # headers 最后生成
-        self.headers.append(("Content-Type", "{ct}; charset={ed}".format(ct=self.content_type, ed=self.encoding)))
+        self.headers.append(("Content-Type", "{0}; charset={1}".format(self.content_type, self.encoding)))
 
-        def view(environ, start_response):
-            start_response(msg, self.headers)
-            yield self.response_text()
+        start_response(msg, self.headers)
+        yield self.encode_response()
 
-        return view
+
+class ErrorResponse(ResponseBase):
+    encoding = "utf-8"
+    content_type = "application/json"
+
+    def __init__(self, error):
+        self.err = error
+        super().__init__(content=error.message, status=error.code, status_msg=error.status_msg)
+
+    def encode_response(self):
+        resp = {
+            "code": self.err.code,
+            "message": self.err.message
+        }
+        return json.dumps(resp, ensure_ascii=False).encode(self.encoding)
 
 
 class TemplateResponse(ResponseBase):
@@ -79,8 +96,8 @@ class Text(ResponseBase):
 class Json(ResponseBase):
     content_type = "application/json"
 
-    def response_text(self):
-        return json.dumps(self.content, ensure_ascii=False).encode("utf-8")
+    def encode_response(self):
+        return json.dumps(self.content, ensure_ascii=False).encode(self.encoding)
 
 
 class Xml(ResponseBase):
@@ -89,4 +106,3 @@ class Xml(ResponseBase):
 
 class Html(ResponseBase):
     content_type = "text/html"
-

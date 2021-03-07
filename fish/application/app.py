@@ -1,12 +1,11 @@
 from ..router import PathRouter
 from ..request import Request
-from ..response.http import NotFoundResponse, MethodNotAllowResponse
-from ..response.errors import MethodNoteFoundError, NotFoundError
+from ..exception.errors import HttpException
 from ..parsers import BaseParser
 from ..config import METHODS
 from typing import List, Callable, Dict
 from functools import wraps
-from ..response import Json
+from ..response import ErrorResponse, Json
 from ..parsers import UrlParser
 
 
@@ -103,9 +102,7 @@ class FishApp(RouteInf):
             request.parsing(path_obj.parsers)
             # 执行 resp类的call
             response_data = path_obj.view(request)
-            resp = Json(response_data)()
-        except NotFoundError:
-            resp = NotFoundResponse()()
-        except MethodNoteFoundError:
-            resp = MethodNotAllowResponse()()
+            resp = Json(response_data)
+        except HttpException as e:
+            return ErrorResponse(e)(environ, start_response)
         return resp(environ, start_response)
