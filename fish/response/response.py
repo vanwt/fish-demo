@@ -1,5 +1,4 @@
-import json
-from typing import List
+import orjson
 
 
 class ResponseBase:
@@ -62,31 +61,52 @@ class ErrorResponse(ResponseBase):
     encoding = "utf-8"
     content_type = "application/json"
 
+    def __init__(self, error, exc_type=None):
+
+        # str(exc_type)[8:-2] -> "<class 'ValueError'>"  ->  "ValueError"
+        if exc_type:
+            error_name = str(exc_type)[8:-2]
+            content = "{0}: {1}".format(error_name, error.args[0])
+        else:
+            content = error.args[0]
+
+        super().__init__(content=content, status=500, status_msg="SERVER ERROR")
+
+    def encode_response(self):
+        resp = {
+            "code": 500,
+            "message": self.content
+        }
+        return orjson.dumps(resp)
+
+
+class HttpErrorResponse(ResponseBase):
+    encoding = "utf-8"
+    content_type = "application/json"
+
     def __init__(self, error):
         self.err = error
         super().__init__(content=error.message, status=error.code, status_msg=error.status_msg)
 
     def encode_response(self):
         resp = {
-            "code": self.err.code,
-            "message": self.err.message
+            "code": self.status_code,
+            "message": self.content
         }
-        return json.dumps(resp, ensure_ascii=False).encode(self.encoding)
+        return orjson.dumps(resp)
 
 
 class TemplateResponse(ResponseBase):
     content_type = "text/html"
 
-    def __init__(self, template_name: str = None, encoding: str = None):
+    def __init__(self, template_name: str, encoding: str = "UTF-8"):
         super(TemplateResponse, self).__init__(status=200)
-        if encoding:
-            self.encoding = encoding
-        if template_name:
-            self.file_to_response(template_name)
+        self.encoding = encoding
+        self.template_name = template_name
 
-    def file_to_response(self, name):
-        with open(name, "r", encoding="UTF-8", errors="ignore") as f:
-            self.content = f.read()
+    def encode_response(self):
+        with open(self.template_name, "rb", encoding=self.encoding, errors="ignore") as f:
+            return f.read()
 
 
 class Text(ResponseBase):
@@ -97,7 +117,7 @@ class Json(ResponseBase):
     content_type = "application/json"
 
     def encode_response(self):
-        return json.dumps(self.content, ensure_ascii=False).encode(self.encoding)
+        return orjson.dumps(self.content)
 
 
 class Xml(ResponseBase):

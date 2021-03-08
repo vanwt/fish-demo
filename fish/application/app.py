@@ -2,47 +2,74 @@ from ..router import PathRouter
 from ..request import Request
 from ..exception.errors import HttpException
 from ..parsers import BaseParser
-from ..config import METHODS
 from typing import List, Callable, Dict
 from functools import wraps
-from ..response import ErrorResponse, Json
+from ..response import HttpErrorResponse, ErrorResponse, Json
 from ..parsers import UrlParser
+import os
+import sys
+import traceback
+
+METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
 
 
 class RouteInf:
-    def at_route(self, *args, **kwargs):
+    """
+    装饰器
+    @app.route("/",["GET"])
+    def test(req):
+        return "ok"
+
+    @app.route("/",["POST"])
+    def test2(req):
+        return "ok"
+    加入到路由表中
+
+    """
+
+    def route(self, *args, **kwargs):
         pass
 
     def get(self, path: str, parsers: List[BaseParser] = None, response=None):
-        return self.at_route(path, "GET", parsers, response)
+        return self.route(path, "GET", parsers, response)
 
     def post(self, path: str, parsers: List[BaseParser] = None, response=None):
-        return self.at_route(path, "POST", parsers, response)
+        return self.route(path, "POST", parsers, response)
 
     def update(self, path: str, parsers: List[BaseParser] = None, response=None):
-        return self.at_route(path, "UPDATE", parsers, response)
+        return self.route(path, "UPDATE", parsers, response)
 
     def delete(self, path: str, parsers: List[BaseParser] = None, response=None):
-        return self.at_route(path, "DELETE", parsers, response)
+        return self.route(path, "DELETE", parsers, response)
 
     def patch(self, path: str, parsers: List[BaseParser] = None, response=None):
-        return self.at_route(path, "PATCH", parsers, response)
+        return self.route(path, "PATCH", parsers, response)
 
     def options(self, path: str, parsers: List[BaseParser] = None, response=None):
-        return self.at_route(path, "OPTIONS", parsers, response)
+        return self.route(path, "OPTIONS", parsers, response)
 
 
 class FishApp(RouteInf):
     request_class = Request
     static_url = ""
     static_dir = None
+    DEBUG = True
+    ERROR_LOG = sys.stderr
 
     def __init__(self):
         self.routes = PathRouter()
         self.debug = True
         self.parser_map: dict = {}
 
-    def add_routes(self, path: str, view: Callable, method: str, parsers: List[BaseParser], resp_class: Callable):
+    def include_static(self, static_dir_name, static_url):
+        path = os.path.join(os.getcwd(), static_dir_name)
+        if not os.path.exists(path):
+            raise FileNotFoundError("This '{0}' file does not exist".format(static_dir_name))
+
+        self.static_path = path
+        self.static_url = static_url
+
+    def _add_routes(self, path: str, view: Callable, method: str, parsers: List[BaseParser], resp_class: Callable):
         """
         添加路由
         :param path: url
@@ -56,29 +83,14 @@ class FishApp(RouteInf):
 
         self.routes.set_route(path=path, view_func=view, method=method, resp_class=resp_class, parsers=parsers)
 
-    def route(self, path: str, method: str, parsers: List[BaseParser] = None, response=None):
-        """
-        装饰器
-        @app.route("/",["GET"])
-        def test(req):
-            return "ok"
-
-        @app.route("/",["POST"])
-        def test2(req):
-            return "ok"
-        加入到路由表中
-
-        """
-        return self.at_route(path, method, parsers, response)
-
-    def at_route(self, path: str, method: str, parsers: List[BaseParser], response):
+    def route(self, path: str, method: str, parsers: List[BaseParser], response):
         # 解析器默认只有url解析
         parsers = parsers if parsers else (UrlParser,)
         response_class = response if response else Json
 
         def add_route(func: Callable):
             # 加入到路由表中
-            self.add_routes(path=path, view=func, method=method, parsers=parsers, resp_class=response_class)
+            self._add_routes(path=path, view=func, method=method, parsers=parsers, resp_class=response_class)
 
             @wraps(func)
             def wrapper():
@@ -103,6 +115,16 @@ class FishApp(RouteInf):
             # 执行 resp类的call
             response_data = path_obj.view(request)
             resp = Json(response_data)
-        except HttpException as e:
-            return ErrorResponse(e)(environ, start_response)
+        except HttpException as http_err:
+            return HttpErrorResponse(http_err)(environ, start_response)
+        except Exception as err:
+            if self.DEBUG:
+                exc_type, exc_value, exc_traceback_obj = sys.exc_info()
+                traceback.print_exception(exc_type, exc_value, exc_traceback_obj, limit=2, file=sys.stderr)
+
+                return ErrorResponse(err, exc_type)(environ, start_response)
+            else:
+                traceback.print_exc(file=self.ERROR_LOG)
+                return ErrorResponse(err)(environ, start_response)
+
         return resp(environ, start_response)

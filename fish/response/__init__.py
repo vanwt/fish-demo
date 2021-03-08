@@ -1,1 +1,1 @@
-from .response import ResponseBase, ErrorResponse, Json, Html, Xml, Text
+from .response import ResponseBase, HttpErrorResponse,ErrorResponse, Json, Html, Xml, Text

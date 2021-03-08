@@ -1,13 +1,18 @@
-from fish.application import FishApp
+from fish import FishApp
 from fish.response import Text
 from fish.parsers import UrlParser, FormParser
 
 app = FishApp()
+app.include_static("static", "/static")
+
+
+def ccc(a):
+    return int(a)
 
 
 @app.get("/index", response=Text)
 def index(req):
-    print(req.data)
+    ccc(req.data["a"])
     return {"msg": "Hello Word", "code": 0}
 
 
