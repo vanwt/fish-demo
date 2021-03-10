@@ -33,7 +33,9 @@ class ResponseBase:
 
     def encode_response(self):
         """ 数据进行转码 """
-        return self.content.encode(self.encoding)
+        if isinstance(self.content, str):
+            return self.content.encode(self.encoding)
+        return str(self.content).encode(self.encoding)
 
     def set_cookie(self, name: str, value, second: int = None, path: str = "/"):
         """

@@ -4,7 +4,7 @@ from ..exception.errors import HttpException
 from ..parsers import BaseParser
 from typing import List, Callable, Dict
 from functools import wraps
-from ..response import HttpErrorResponse, ErrorResponse, Json
+from ..response import HttpErrorResponse, ErrorResponse, Json, ResponseBase
 from ..parsers import UrlParser
 import os
 import sys
@@ -100,12 +100,8 @@ class FishApp(RouteInf):
 
         return add_route
 
-    def run(self, host="127.0.0.1", port=8000, **options):
-        from werkzeug.serving import run_simple
-        options.setdefault("threaded", True)
-        run_simple(host, port, self, **options)
 
-    def __call__(self, environ: Dict, start_response: Callable):
+    def wsgi(self, environ, start_response):
         # 此处要返回一个handler
         request = self.request_class(environ)
         try:
@@ -114,7 +110,10 @@ class FishApp(RouteInf):
             request.parsing(path_obj.parsers)
             # 执行 resp类的call
             response_data = path_obj.view(request)
-            resp = Json(response_data)
+            if isinstance(response_data, ResponseBase):
+                resp = response_data
+            else:
+                resp = path_obj.resp_class(response_data)
         except HttpException as http_err:
             return HttpErrorResponse(http_err)(environ, start_response)
         except Exception as err:
@@ -128,3 +127,6 @@ class FishApp(RouteInf):
                 return ErrorResponse(err)(environ, start_response)
 
         return resp(environ, start_response)
+
+    def __call__(self, environ: Dict, start_response: Callable):
+        return self.wsgi(environ, start_response)

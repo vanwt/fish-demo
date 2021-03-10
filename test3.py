@@ -1,5 +1,5 @@
 from fish import FishApp
-from fish.response import Text
+from fish.serve import run
 from fish.parsers import UrlParser, FormParser
 
 app = FishApp()
@@ -10,9 +10,9 @@ def ccc(a):
     return int(a)
 
 
-@app.get("/index", response=Text)
+@app.get("/index")
 def index(req):
-    ccc(req.data["a"])
+    # return Html("<h1>Hello Word</h1>")
     return {"msg": "Hello Word", "code": 0}
 
 
@@ -23,4 +23,4 @@ def index_post(req):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    run(app,host="0.0.0.0")
