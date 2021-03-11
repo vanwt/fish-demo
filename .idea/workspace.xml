@@ -2,35 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f8bb96be-ce63-4ea2-b40d-43f7b9580836" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/fish-demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fish-demo.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/application/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/application/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/application/baseapp.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/exception/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/exception/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/exception.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/middleware/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/parsers/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/parsers/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/parsers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/parsers/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/pulgin/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/pulgin/static.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/pulgin/template.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/response/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/response/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/response/http.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/response/loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/response/loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/response/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/response/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/router/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/router/route.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/router.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/router/test/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/router/test/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/router/test/test2.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/router/test/test3.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/TestApp.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test3.py" beforeDir="false" afterPath="$PROJECT_DIR$/test3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -260,7 +232,7 @@
       <workItem from="1615370365509" duration="105000" />
       <workItem from="1615428174789" duration="1518000" />
       <workItem from="1615430120514" duration="6364000" />
-      <workItem from="1615457329447" duration="229000" />
+      <workItem from="1615457329447" duration="505000" />
     </task>
     <task id="LOCAL-00001" summary="反向优化，增加可读性">
       <created>1612691163566</created>
@@ -311,7 +283,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615370443321</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="优化结构增加静态文件支持">
+      <created>1615457652389</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1615457652389</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -325,7 +304,8 @@
     <MESSAGE value="优化app" />
     <MESSAGE value="优化app,优化错误返回" />
     <MESSAGE value="优化" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化" />
+    <MESSAGE value="优化结构增加静态文件支持" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化结构增加静态文件支持" />
   </component>
   <component name="WindowStateProjectService">
     <state x="488" y="83" key="#com.intellij.ide.util.MemberChooser" timestamp="1612686266804">
@@ -336,10 +316,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="413" y="113" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1612492860459" />
-    <state x="295" y="0" key="CommitChangelistDialog2" timestamp="1615370439309">
+    <state x="295" y="0" key="CommitChangelistDialog2" timestamp="1615457649916">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="295" y="0" key="CommitChangelistDialog2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1615370439309" />
+    <state x="295" y="0" key="CommitChangelistDialog2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1615457649916" />
     <state x="129" y="55" key="DiffContextDialog" timestamp="1615370418792">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -372,10 +352,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1613443095073" />
-    <state x="275" y="100" key="Vcs.Push.Dialog.v2" timestamp="1615370454087">
+    <state x="275" y="100" key="Vcs.Push.Dialog.v2" timestamp="1615457862498">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="100" key="Vcs.Push.Dialog.v2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1615370454087" />
+    <state x="275" y="100" key="Vcs.Push.Dialog.v2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1615457862498" />
     <state x="0" y="0" key="com.intellij.ide.util.TipDialog" timestamp="1615457588307">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

@@ -1,1 +1,5 @@
-.idea
+fish/.idea
+fish/__pycache__
+fish/response/__pycache__
+fish/request/__pycache__
+fish/serve/__pycache__
