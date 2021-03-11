@@ -1,1 +1,1 @@
-from .application.app import FishApp
+from .application import FishApp

@@ -1,6 +1,6 @@
-from fish.parsers import BaseParser, UrlParser
-from fish.response import ResponseBase, Json
-from fish.response.http import MethodNotAllowResponse
+from ..parsers import BaseParser, UrlParser
+from ..response import ResponseBase, Json
+from ..exception import MethodNoteFoundError
 from typing import Tuple
 
 
@@ -15,13 +15,12 @@ class BaseView:
     def __call__(self):
         response_view = getattr(self, self.request.method.lower(), None)
         if response_view is None:
-            resp = MethodNotAllowResponse()
-            return resp()
+            raise MethodNoteFoundError()
 
         # 如果访问文档
         if self.SHOW_DOCUMENT and "doc" in self.request.data:
             resp = Json({"help": response_view.__doc__})
-            return resp()
+            return resp
 
         resp = response_view(self.request)
         # 如果已经返回了response对象，则直接返回对象

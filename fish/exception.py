@@ -32,6 +32,12 @@ class NotFoundError(HttpException):
     message = "The requested URL was not found on the server."
 
 
+class FileNotFoundHttpError(HttpException):
+    code = 404
+    status_msg = "FILE NOT FOUND"
+    message = "File Not Found!"
+
+
 class ValueHttpError(HttpException):
     code = 500
     status_msg = "VALUE ERROR"

@@ -1,5 +1,5 @@
+from time import clock
 import re
-from ..exception.errors import NotFoundError
 
 
 class ViewInfo:
@@ -54,8 +54,7 @@ class PathRouter:
                 else:
                     if vi.path == path:
                         return vi
-        else:
-            raise NotFoundError("404 Not Found")
+        return None
 
     def __iter__(self):
         for i in self._map:
@@ -72,8 +71,6 @@ class PathRouter:
 
 
 if __name__ == '__main__':
-    from time import clock
-
     """ 
     简单压力测试 
     URL 50 条

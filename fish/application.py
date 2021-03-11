@@ -1,11 +1,11 @@
-from ..router import PathRouter
-from ..request import Request
-from ..exception.errors import HttpException
-from ..parsers import BaseParser
 from typing import List, Callable, Dict
 from functools import wraps
-from ..response import HttpErrorResponse, ErrorResponse, Json, ResponseBase
-from ..parsers import UrlParser
+
+from .router import PathRouter
+from .request import Request
+from .exception import HttpException
+from .parsers import BaseParser, UrlParser
+from .response import ResponseBase, HttpErrorResponse, ErrorResponse, Json, StaticLoader
 import os
 import sys
 import traceback
@@ -52,7 +52,7 @@ class RouteInf:
 class FishApp(RouteInf):
     request_class = Request
     static_url = ""
-    static_dir = None
+    static_path = None
     DEBUG = True
     ERROR_LOG = sys.stderr
 
@@ -60,14 +60,19 @@ class FishApp(RouteInf):
         self.routes = PathRouter()
         self.debug = True
         self.parser_map: dict = {}
+        self.static = False
 
-    def include_static(self, static_dir_name, static_url):
+    def include_static(self, static_dir_name, static_url="/static"):
         path = os.path.join(os.getcwd(), static_dir_name)
+        if not static_url.startswith("/"):
+            raise ValueError("URL must start with /")
+
         if not os.path.exists(path):
             raise FileNotFoundError("This '{0}' file does not exist".format(static_dir_name))
 
         self.static_path = path
         self.static_url = static_url
+        self.static = True
 
     def _add_routes(self, path: str, view: Callable, method: str, parsers: List[BaseParser], resp_class: Callable):
         """
@@ -100,11 +105,17 @@ class FishApp(RouteInf):
 
         return add_route
 
-
     def wsgi(self, environ, start_response):
         # 此处要返回一个handler
         request = self.request_class(environ)
+        print(request.path)
+
         try:
+            # 静态文件
+            if self.static and request.path.startswith(self.static_url):
+                resp = StaticLoader(static_path=self.static_path, url=request.path, head_url=self.static_url)
+                return resp(environ, start_response)
+
             path_obj = self.routes.get_route(request.path, request.method)
             # 解析
             request.parsing(path_obj.parsers)
@@ -129,4 +140,5 @@ class FishApp(RouteInf):
         return resp(environ, start_response)
 
     def __call__(self, environ: Dict, start_response: Callable):
+
         return self.wsgi(environ, start_response)

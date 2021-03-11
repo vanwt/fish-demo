@@ -3,7 +3,7 @@ from fish.serve import run
 from fish.parsers import UrlParser, FormParser
 
 app = FishApp()
-app.include_static("static", "/static")
+app.include_static("static", "/aaa/bbb")
 
 
 def ccc(a):
