@@ -5,7 +5,8 @@ from .router import PathRouter
 from .request import Request
 from .exception import HttpException
 from .parsers import BaseParser, UrlParser
-from .response import ResponseBase, HttpErrorResponse, ErrorResponse, Json, StaticLoader
+from .response import ResponseBase, HttpErrorResponse, ErrorResponse, Json
+from .response.static import StaticRouter
 import os
 import sys
 import traceback
@@ -60,6 +61,7 @@ class FishApp(RouteInf):
         self.routes = PathRouter()
         self.debug = True
         self.parser_map: dict = {}
+        self.static_route = None
         self.static = False
 
     def include_static(self, static_dir_name, static_url="/static"):
@@ -70,7 +72,7 @@ class FishApp(RouteInf):
         if not os.path.exists(path):
             raise FileNotFoundError("This '{0}' file does not exist".format(static_dir_name))
 
-        self.static_path = path
+        self.static_route = StaticRouter(path)
         self.static_url = static_url
         self.static = True
 
@@ -113,8 +115,8 @@ class FishApp(RouteInf):
         try:
             # 静态文件
             if self.static and request.path.startswith(self.static_url):
-                resp = StaticLoader(static_path=self.static_path, url=request.path, head_url=self.static_url)
-                return resp(environ, start_response)
+                file = self.static_route.check_file(request.path)
+                return self.static_route(file, environ, start_response)
 
             path_obj = self.routes.get_route(request.path, request.method)
             # 解析
