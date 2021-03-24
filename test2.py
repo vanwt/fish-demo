@@ -1,24 +1,53 @@
-from fish.application.newapp import NewApp
-from fish.response import Json, Text
-
-# app = BaseApp()
-app = NewApp()
+from random import randint
+from time import clock
 
 
-@app.response(Json)
-@app.route("/index", "GET", parsers=(1, 2, 3, 4), resp=Json)
-def index(req):
-    return {"code": 0, "msg": "Hello Word"}
+def get_data1():
+    a = randint(1, 10)
+    if a % 2 == 0:
+        n = {"a": "c", "b": "e"}
+        n.update({"AAAAAAA": "EEEEEEEEEEEEE"})
+        n.update({"1asdf34d3d3d3": 2392345353524334242})
+        return n
+    else:
+        return False
+
+
+def get_data2():
+    a = randint(1, 10)
+    if a % 2 == 0:
+        n = {"a": "c", "b": "e"}
+        n.update({"AAAAAAA": "EEEEEEEEEEEEE"})
+        n.update({"1asdf34d3d3d3": 2392345353524334242})
+        n.update({"msg": a})
+        return n
+    else:
+        return {}
+
+
+def d1():
+    start = clock()
+    for i in range(10000):
+        d = {"1": "2", "2": "3", "3": "4", "4": "5"}
+        data = get_data1()
+        if isinstance(data, dict):
+            d.update(data)
+    end = clock()
+
+    print(end - start)
+
+
+def d2():
+    start = clock()
+    for i in range(10000):
+        d = {"1": "2", "2": "3", "3": "4", "4": "5"}
+        data = get_data2()
+        d.update(data)
+    end = clock()
+
+    print(end - start)
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0",port=8000)
-    app.run2(host="0.0.0.0", port=8000, thread=True)
-
-
-@Router("/", sdfsff)
-class A:
-    @Response(Text)
-    @Parser(Json, Text)
-    def get(self):
-        pass
+    d1()
+    d2()

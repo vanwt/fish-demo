@@ -4,9 +4,8 @@ import json
 app = Flask("__name__")
 
 
-@app.route("/index/<int:id>", methods=["POST", "GET"])
-def req(id):
-    print(id)
+@app.route("/index", methods=["POST", "GET"])
+def req():
     return jsonify({"code": 0, "msg": "hello word"})
 
 

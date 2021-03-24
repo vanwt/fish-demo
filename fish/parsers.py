@@ -3,6 +3,100 @@ import cgi
 from urllib.parse import parse_qs
 
 
+def format_data(data):
+    """ 处理 {'name': [b'cmd']} 为  {'name':'cmd'}"""
+
+    for k, v in data.items():
+        if len(v) == 1 and type(v) is list:
+            # 如果列表中只有一个数据时
+            if type(v[0]) is bytes:
+                data[k] = v[0].decode()
+            else:
+                data[k] = v[0]
+        if type(v) is bytes:
+            data[k] = v.decode()
+    return data
+
+
+class Parser:
+    def check_and_parser(self, environ):
+        pass
+
+
+class UrlParam(Parser):
+    def check_and_parser(self, environ):
+        query = environ.get("QUERY_STRING", None)
+        if query:
+            data = parse_qs(query, keep_blank_values=False, strict_parsing=False, encoding="utf-8")
+            return format_data(data)
+        return None
+
+
+class JsonParam(Parser):
+    def check_and_parser(self, environ):
+
+        content_length = int(environ.get("CONTENT_LENGTH", 0))
+        content_type = environ.get('CONTENT_TYPE', None)
+        if content_type:
+            content_type, pdict = cgi.parse_header(content_type)
+
+        if not content_length and content_type not in ("text/json", "application/json"):
+            return None
+
+        source = environ.get('wsgi.input', None)
+        if not source:
+            return None
+
+        data = json.loads(source.read(content_length))
+        return format_data(data)
+
+
+class FormParam(Parser):
+    def check_and_parser(self, environ):
+
+        ctype, pdict = cgi.parse_header(environ['CONTENT_TYPE'])
+        if "boundary" in pdict:
+            if isinstance(pdict["boundary"], str):
+                pdict['boundary'] = pdict['boundary'].encode()
+
+        if ctype not in ["multipart/form-data", "application/x-www-form-urlencoded"]:
+            return None
+
+        source = environ.get("wsgi.input", None)
+        if not source:
+            return None
+
+        content_length = int(environ.get("CONTENT_LENGTH", 0))
+
+        if ctype == 'multipart/form-data' and pdict:
+            data = cgi.parse_multipart(source, pdict)
+            return format_data(data)
+
+        elif ctype == 'application/x-www-form-urlencoded' and content_length:
+            data = parse_qs(source.read(content_length).decode())
+            return format_data(data)
+
+        return None
+
+
+class XmlParam(Parser):
+    def check_and_parser(self, environ):
+        source = environ.get("wsgi.input", None)
+        content_length = int(environ.get("CONTENT_LENGTH", 0))
+
+        ctype = environ.get('CONTENT_TYPE', None)
+        content_type, pdict = cgi.parse_header(ctype)
+
+        if content_type not in ("text/xml", "application/xml"):
+            return None
+
+        if content_length:
+            data = source.read(content_length)
+            # 得到的字节串
+            return {"xml": data}
+        return None
+
+
 class BaseParser:
     def parser(self):
         pass
@@ -67,13 +161,8 @@ class UrlParser(BaseParser):
         return self.query != ""
 
     def parser(self):
-        # import time
-        # s = time.clock()
         query = parse_qs(self.query, keep_blank_values=False, strict_parsing=False, encoding="utf-8")
-        # time.sleep(0.1)
-        # e = time.clock()
-        # print(query)
-        # print(e - s)
+
         return self.parser_data(query) if query else {}
 
 

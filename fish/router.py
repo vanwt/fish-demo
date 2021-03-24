@@ -8,7 +8,7 @@ class ViewInfo:
         self.path = path
         self.method = method
         self.view = view
-        self.parsers = parsers
+        self.parsers = [p() for p in parsers]
         self.resp_class = resp_class
         self.re_path = False
         self.check_path()

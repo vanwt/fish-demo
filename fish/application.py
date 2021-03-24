@@ -2,9 +2,9 @@ from typing import List, Callable, Dict
 from functools import wraps
 
 from .router import PathRouter
-from .request import Request
+from .request import Request, NewRequest
 from .exception import HttpException
-from .parsers import BaseParser, UrlParser
+from .parsers import BaseParser, UrlParser, UrlParam
 from .response import ResponseBase, HttpErrorResponse, ErrorResponse, Json
 from .response.static import StaticRouter
 import os
@@ -31,7 +31,7 @@ class RouteInf:
     def route(self, *args, **kwargs):
         pass
 
-    def get(self, path: str, parsers: List[BaseParser] = None, response=None):
+    def get(self, path: str, parsers=None, response=None):
         return self.route(path, "GET", parsers, response)
 
     def post(self, path: str, parsers: List[BaseParser] = None, response=None):
@@ -51,7 +51,8 @@ class RouteInf:
 
 
 class FishApp(RouteInf):
-    request_class = Request
+    # request_class = Request
+    request_class = NewRequest
     static_url = ""
     static_path = None
     DEBUG = True
@@ -90,9 +91,9 @@ class FishApp(RouteInf):
 
         self.routes.set_route(path=path, view_func=view, method=method, resp_class=resp_class, parsers=parsers)
 
-    def route(self, path: str, method: str, parsers: List[BaseParser], response):
+    def route(self, path: str, method: str, parsers, response):
         # 解析器默认只有url解析
-        parsers = parsers if parsers else (UrlParser,)
+        parsers = parsers if parsers else (UrlParam,)
         response_class = response if response else Json
 
         def add_route(func: Callable):
@@ -107,28 +108,39 @@ class FishApp(RouteInf):
 
         return add_route
 
-    def wsgi(self, environ, start_response):
-        # 此处要返回一个handler
-        request = self.request_class(environ)
-        print(request.path)
+    def asgi(self):
+        pass
 
+    def wsgi(self, request):
         try:
-            # 静态文件
-            if self.static and request.path.startswith(self.static_url):
-                file = self.static_route.check_file(request.path)
-                return self.static_route(file, environ, start_response)
-
             path_obj = self.routes.get_route(request.path, request.method)
             # 解析
+            # request.parsing(path_obj.parsers)
             request.parsing(path_obj.parsers)
             # 执行 resp类的call
-            response_data = path_obj.view(request)
-            if isinstance(response_data, ResponseBase):
-                resp = response_data
-            else:
-                resp = path_obj.resp_class(response_data)
+            resp_data = path_obj.view(request)
+            if isinstance(resp_data, ResponseBase):
+                return resp_data
+
+            resp = path_obj.resp_class(resp_data)
+
         except HttpException as http_err:
-            return HttpErrorResponse(http_err)(environ, start_response)
+            return HttpErrorResponse(http_err)
+        return resp
+
+    def __call__(self, environ: Dict, start_response: Callable):
+        # 处理 请求参数
+        request = self.request_class(environ)
+
+        # 静态文件
+        if self.static and request.path.startswith(self.static_url):
+            file = self.static_route.check_file(request.path)
+            return self.static_route(file, environ, start_response)
+
+        try:
+
+            resp = self.wsgi(request)
+
         except Exception as err:
             if self.DEBUG:
                 exc_type, exc_value, exc_traceback_obj = sys.exc_info()
@@ -138,9 +150,5 @@ class FishApp(RouteInf):
             else:
                 traceback.print_exc(file=self.ERROR_LOG)
                 return ErrorResponse(err)(environ, start_response)
-
+        del request
         return resp(environ, start_response)
-
-    def __call__(self, environ: Dict, start_response: Callable):
-
-        return self.wsgi(environ, start_response)

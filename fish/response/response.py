@@ -9,7 +9,11 @@ class ResponseBase:
     content: str = ""
     encoding = "utf-8"
 
-    def __init__(self, content=None, content_type: str = None, status: int = None, status_msg: str = None,
+    def __init__(self,
+                 content=None,
+                 content_type: str = None,
+                 status: int = None,
+                 status_msg: str = None,
                  encoding: str = None):
         self.headers = []
         if content:
