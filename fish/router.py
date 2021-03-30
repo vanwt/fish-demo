@@ -8,7 +8,7 @@ class ViewInfo:
         self.path = path
         self.method = method
         self.view = view
-        self.parsers = [p() for p in parsers]
+        self.parsers = parsers
         self.resp_class = resp_class
         self.re_path = False
         self.check_path()
@@ -17,7 +17,7 @@ class ViewInfo:
         return self.path
 
     def check_path(self):
-        d = re.findall("/(<int:\w+>|<str:\w+>)/?", self.path)
+        d = re.findall("/(<int:(\w+)>|<str:(\w+)>)/?", self.path)
         if len(d):
             self.re_path = True
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     from time import clock
 
     """ 
-    简单压力测试 
+    简单测试 
     URL 50 条
     """
 

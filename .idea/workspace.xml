@@ -2,15 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f8bb96be-ce63-4ea2-b40d-43f7b9580836" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/fish/request/session.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/django_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/django_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/fastapi_demo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fish/application.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/application.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fish/parsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/parsers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/request/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/request/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fish/request/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/request/request.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fish/response/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/response/response.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fish/router.py" beforeDir="false" afterPath="$PROJECT_DIR$/fish/router.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flask_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask_demo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test2.py" beforeDir="false" afterPath="$PROJECT_DIR$/test2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flask_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/flask_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/req_demo.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sanic_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/sanic_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test2.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test3.py" beforeDir="false" afterPath="$PROJECT_DIR$/test3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,17 +50,17 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\我的项目\fish-demo\test" />
+      <recent name="E:\我的项目\fish-demo\fish" />
+      <recent name="E:\fish-demo\fish\request" />
+      <recent name="E:\fish-demo\fish\response" />
+      <recent name="E:\fish-demo\fish\router" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\我的项目\fish-demo\static" />
       <recent name="E:\我的项目\fish-demo\fish\application" />
       <recent name="E:\我的项目\fish-demo\fish\router" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\我的项目\fish-demo\fish" />
-      <recent name="E:\我的项目\fish-demo\test" />
-      <recent name="E:\fish-demo\fish\request" />
-      <recent name="E:\fish-demo\fish\response" />
-      <recent name="E:\fish-demo\fish\router" />
     </key>
   </component>
   <component name="RunManager" selected="Python.test3 (1)">
@@ -94,7 +99,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fastapi_demo.py" />
+      <option name="SCRIPT_NAME" value="E:\我的项目\fish-demo\test\fastapi_demo.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -116,7 +121,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/flask_demo.py" />
+      <option name="SCRIPT_NAME" value="E:\我的项目\fish-demo\test\flask_demo.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -129,6 +134,9 @@
       <module name="fish-demo" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -170,6 +178,9 @@
       <module name="fish-demo" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/python" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -240,7 +251,10 @@
       <workItem from="1616064548886" duration="445000" />
       <workItem from="1616117129509" duration="69000" />
       <workItem from="1616137995810" duration="7514000" />
-      <workItem from="1616575547181" duration="4276000" />
+      <workItem from="1616575547181" duration="4332000" />
+      <workItem from="1616735374200" duration="5687000" />
+      <workItem from="1617001981701" duration="849000" />
+      <workItem from="1617074691624" duration="1828000" />
     </task>
     <task id="LOCAL-00001" summary="反向优化，增加可读性">
       <created>1612691163566</created>
@@ -305,7 +319,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616064622787</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="优化解析器">
+      <created>1616581607044</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1616581607044</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -321,7 +342,8 @@
     <MESSAGE value="优化" />
     <MESSAGE value="优化结构增加静态文件支持" />
     <MESSAGE value="优化静态文件加载器" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化静态文件加载器" />
+    <MESSAGE value="优化解析器" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化解析器" />
   </component>
   <component name="WindowStateProjectService">
     <state x="488" y="83" key="#com.intellij.ide.util.MemberChooser" timestamp="1612686266804">
@@ -332,50 +354,50 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="413" y="113" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1612492860459" />
-    <state x="295" y="0" key="CommitChangelistDialog2" timestamp="1616064621066">
+    <state x="295" y="0" key="CommitChangelistDialog2" timestamp="1617098230671">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="295" y="0" key="CommitChangelistDialog2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616064621066" />
+    <state x="295" y="0" key="CommitChangelistDialog2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1617098230671" />
     <state x="129" y="55" key="DiffContextDialog" timestamp="1615370418792">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="129" y="55" key="DiffContextDialog/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1615370418792" />
-    <state width="1323" height="292" key="GridCell.Tab.0.bottom" timestamp="1616581574466">
+    <state width="1323" height="238" key="GridCell.Tab.0.bottom" timestamp="1617004827399">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="292" key="GridCell.Tab.0.bottom/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581574466" />
+    <state width="1323" height="238" key="GridCell.Tab.0.bottom/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1617004827399" />
     <state width="1323" height="206" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1613443142470" />
-    <state width="1323" height="292" key="GridCell.Tab.0.center" timestamp="1616581574466">
+    <state width="1323" height="238" key="GridCell.Tab.0.center" timestamp="1617004827398">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="292" key="GridCell.Tab.0.center/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581574466" />
+    <state width="1323" height="238" key="GridCell.Tab.0.center/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1617004827398" />
     <state width="1323" height="206" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1613443142470" />
-    <state width="1323" height="292" key="GridCell.Tab.0.left" timestamp="1616581574466">
+    <state width="1323" height="238" key="GridCell.Tab.0.left" timestamp="1617004827398">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="292" key="GridCell.Tab.0.left/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581574466" />
+    <state width="1323" height="238" key="GridCell.Tab.0.left/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1617004827398" />
     <state width="1323" height="206" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1613443142470" />
-    <state width="1323" height="292" key="GridCell.Tab.0.right" timestamp="1616581574466">
+    <state width="1323" height="238" key="GridCell.Tab.0.right" timestamp="1617004827398">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="292" key="GridCell.Tab.0.right/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581574466" />
+    <state width="1323" height="238" key="GridCell.Tab.0.right/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1617004827398" />
     <state width="1323" height="206" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1613443142470" />
-    <state width="1323" height="223" key="GridCell.Tab.1.bottom" timestamp="1616581018462">
+    <state width="1323" height="223" key="GridCell.Tab.1.bottom" timestamp="1616581634841">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="223" key="GridCell.Tab.1.bottom/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581018462" />
-    <state width="1323" height="223" key="GridCell.Tab.1.center" timestamp="1616581018462">
+    <state width="1323" height="223" key="GridCell.Tab.1.bottom/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581634841" />
+    <state width="1323" height="223" key="GridCell.Tab.1.center" timestamp="1616581634841">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="223" key="GridCell.Tab.1.center/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581018462" />
-    <state width="1323" height="223" key="GridCell.Tab.1.left" timestamp="1616581018462">
+    <state width="1323" height="223" key="GridCell.Tab.1.center/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581634841" />
+    <state width="1323" height="223" key="GridCell.Tab.1.left" timestamp="1616581634841">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="223" key="GridCell.Tab.1.left/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581018462" />
-    <state width="1323" height="223" key="GridCell.Tab.1.right" timestamp="1616581018462">
+    <state width="1323" height="223" key="GridCell.Tab.1.left/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581634841" />
+    <state width="1323" height="223" key="GridCell.Tab.1.right" timestamp="1616581634841">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="223" key="GridCell.Tab.1.right/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581018462" />
+    <state width="1323" height="223" key="GridCell.Tab.1.right/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581634841" />
     <state x="186" y="9" key="SettingsEditor" timestamp="1615259148740">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -384,14 +406,14 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1613443095073" />
-    <state x="275" y="100" key="Vcs.Push.Dialog.v2" timestamp="1616117144433">
+    <state x="275" y="100" key="Vcs.Push.Dialog.v2" timestamp="1616581612267">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="100" key="Vcs.Push.Dialog.v2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616117144433" />
-    <state x="0" y="0" key="com.intellij.ide.util.TipDialog" timestamp="1616575550096">
+    <state x="275" y="100" key="Vcs.Push.Dialog.v2/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616581612267" />
+    <state x="0" y="0" key="com.intellij.ide.util.TipDialog" timestamp="1617074693027">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="0" y="0" key="com.intellij.ide.util.TipDialog/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1616575550096" />
+    <state x="0" y="0" key="com.intellij.ide.util.TipDialog/0.0.1366.728/-236.-1080.1920.1040@0.0.1366.728" timestamp="1617074693027" />
     <state x="0" y="0" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1613440941958" />
     <state x="477" y="282" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1615430678120">
       <screen x="0" y="0" width="1366" height="728" />
@@ -412,7 +434,7 @@
     <SUITE FILE_PATH="coverage/fish_demo$app.coverage" NAME="app Coverage Results" MODIFIED="1615192678520" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fish/application" />
     <SUITE FILE_PATH="coverage/fish_demo$django_demo.coverage" NAME="django_demo Coverage Results" MODIFIED="1612511692772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/fish_demo$test1.coverage" NAME="test1 Coverage Results" MODIFIED="1613809323870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/fish_demo$test3__1_.coverage" NAME="test3 (1) Coverage Results" MODIFIED="1616581538355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/fish_demo$test3__1_.coverage" NAME="test3 (1) Coverage Results" MODIFIED="1617002113598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/fish_demo$flask_demo.coverage" NAME="flask_demo Coverage Results" MODIFIED="1616581464096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/fish_demo$test2__1_.coverage" NAME="test2 (1) Coverage Results" MODIFIED="1613810070254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/fish_demo$router.coverage" NAME="router Coverage Results" MODIFIED="1614925677563" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fish/router" />

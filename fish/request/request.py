@@ -33,17 +33,16 @@ class Request(object):
 
 class NewRequest:
     def __init__(self, environ):
-        self.environ = environ
         self.path = environ["PATH_INFO"]
         self.method = environ['REQUEST_METHOD'].upper()
         self.data = {}
         self._cookie = environ.get("HTTP_COOKIE", None)
 
-    def parsing(self, parsers):
+    def parsing(self, parsers, environ):
         """ 根据解析器解析数据 """
 
         for parser in parsers:
-            p_data = parser.check_and_parser(self.environ)
+            p_data = parser("wsgi.input", environ)
             if type(p_data) == dict:
                 self.data.update(p_data)
 

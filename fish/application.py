@@ -4,7 +4,7 @@ from functools import wraps
 from .router import PathRouter
 from .request import Request, NewRequest
 from .exception import HttpException
-from .parsers import BaseParser, UrlParser, UrlParam
+from .parsers import UrlParams
 from .response import ResponseBase, HttpErrorResponse, ErrorResponse, Json
 from .response.static import StaticRouter
 import os
@@ -34,19 +34,19 @@ class RouteInf:
     def get(self, path: str, parsers=None, response=None):
         return self.route(path, "GET", parsers, response)
 
-    def post(self, path: str, parsers: List[BaseParser] = None, response=None):
+    def post(self, path: str, parsers=None, response=None):
         return self.route(path, "POST", parsers, response)
 
-    def update(self, path: str, parsers: List[BaseParser] = None, response=None):
+    def update(self, path: str, parsers=None, response=None):
         return self.route(path, "UPDATE", parsers, response)
 
-    def delete(self, path: str, parsers: List[BaseParser] = None, response=None):
+    def delete(self, path: str, parsers=None, response=None):
         return self.route(path, "DELETE", parsers, response)
 
-    def patch(self, path: str, parsers: List[BaseParser] = None, response=None):
+    def patch(self, path: str, parsers=None, response=None):
         return self.route(path, "PATCH", parsers, response)
 
-    def options(self, path: str, parsers: List[BaseParser] = None, response=None):
+    def options(self, path: str, parsers=None, response=None):
         return self.route(path, "OPTIONS", parsers, response)
 
 
@@ -77,7 +77,7 @@ class FishApp(RouteInf):
         self.static_url = static_url
         self.static = True
 
-    def _add_routes(self, path: str, view: Callable, method: str, parsers: List[BaseParser], resp_class: Callable):
+    def _add_routes(self, path: str, view: Callable, method: str, parsers: List[Callable], resp_class: Callable):
         """
         添加路由
         :param path: url
@@ -93,7 +93,7 @@ class FishApp(RouteInf):
 
     def route(self, path: str, method: str, parsers, response):
         # 解析器默认只有url解析
-        parsers = parsers if parsers else (UrlParam,)
+        parsers = parsers if parsers else (UrlParams,)
         response_class = response if response else Json
 
         def add_route(func: Callable):
@@ -108,27 +108,7 @@ class FishApp(RouteInf):
 
         return add_route
 
-    def asgi(self):
-        pass
-
-    def wsgi(self, request):
-        try:
-            path_obj = self.routes.get_route(request.path, request.method)
-            # 解析
-            # request.parsing(path_obj.parsers)
-            request.parsing(path_obj.parsers)
-            # 执行 resp类的call
-            resp_data = path_obj.view(request)
-            if isinstance(resp_data, ResponseBase):
-                return resp_data
-
-            resp = path_obj.resp_class(resp_data)
-
-        except HttpException as http_err:
-            return HttpErrorResponse(http_err)
-        return resp
-
-    def __call__(self, environ: Dict, start_response: Callable):
+    def wsgi(self, environ, start_response):
         # 处理 请求参数
         request = self.request_class(environ)
 
@@ -138,17 +118,32 @@ class FishApp(RouteInf):
             return self.static_route(file, environ, start_response)
 
         try:
+            path_obj = self.routes.get_route(request.path, request.method)
+            # 解析
+            # request.parsing(path_obj.parsers)
+            request.parsing(path_obj.parsers, environ)
+            # 执行 resp类的call
+            resp_data = path_obj.view(request)
+            if isinstance(resp_data, ResponseBase):
+                return resp_data
 
-            resp = self.wsgi(request)
+            resp = path_obj.resp_class(resp_data)
 
         except Exception as err:
-            if self.DEBUG:
-                exc_type, exc_value, exc_traceback_obj = sys.exc_info()
-                traceback.print_exception(exc_type, exc_value, exc_traceback_obj, limit=2, file=sys.stderr)
 
-                return ErrorResponse(err, exc_type)(environ, start_response)
+            if isinstance(err, HttpException):
+                resp = HttpErrorResponse(err)
             else:
-                traceback.print_exc(file=self.ERROR_LOG)
-                return ErrorResponse(err)(environ, start_response)
-        del request
+                if self.DEBUG:
+                    exc_type, exc_value, exc_traceback_obj = sys.exc_info()
+                    traceback.print_exception(exc_type, exc_value, exc_traceback_obj, limit=2, file=sys.stderr)
+                    resp = ErrorResponse(err, exc_type)
+                else:
+                    traceback.print_exc(file=self.ERROR_LOG)
+                    resp = ErrorResponse(err)
+
         return resp(environ, start_response)
+
+    def __call__(self, environ: Dict, start_response: Callable):
+
+        return self.wsgi(environ, start_response)
