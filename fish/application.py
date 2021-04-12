@@ -2,7 +2,7 @@ from typing import List, Callable, Dict
 from functools import wraps
 
 from .router import PathRouter
-from .request import Request, NewRequest
+from .request import NewRequest
 from .exception import HttpException
 from .parsers import UrlParams
 from .response import ResponseBase, HttpErrorResponse, ErrorResponse, Json
@@ -122,13 +122,14 @@ class FishApp(RouteInf):
             # 解析
             # request.parsing(path_obj.parsers)
             request.parsing(path_obj.parsers, environ)
+
             # 执行 resp类的call
             resp_data = path_obj.view(request)
             if isinstance(resp_data, ResponseBase):
                 return resp_data
 
             resp = path_obj.resp_class(resp_data)
-
+            resp.set_header(request.get_header_param())
         except Exception as err:
 
             if isinstance(err, HttpException):

@@ -1,1 +1,1 @@
-from .request import Request,NewRequest
+from .request import NewRequest

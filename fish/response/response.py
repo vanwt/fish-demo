@@ -14,7 +14,9 @@ class ResponseBase:
                  content_type: str = None,
                  status: int = None,
                  status_msg: str = None,
-                 encoding: str = None):
+                 encoding: str = None,
+                 cookie_params=None
+                 ):
         self.headers = []
         if content:
             self.content = content
@@ -48,17 +50,22 @@ class ResponseBase:
         datetime.utcnow().strftime(f)
         """
         fmt = "{name}={value}; Path={path};".format(name=name, value=value, path=path)
-        if second:
-            fmt += " Expires={date}".format(date=second)
+        # fmt = "{name}={value}; ".format(name=name, value=value)
+        if type(second) is int:
+            fmt += " max-age={date};".format(date=second)
 
         # 加入请求头
         self.headers.append(("Set-Cookie", fmt))
+
+    def set_header(self, headers):
+        if headers:
+            for header in headers:
+                self.set_cookie(header["name"], header["value"], header["date"])
 
     def __call__(self, environ, start_response):
         msg = "{0} {1}".format(self.status_code, self.status_msg)
         # headers 最后生成
         self.headers.append(("Content-Type", "{0}; charset={1}".format(self.content_type, self.encoding)))
-
         start_response(msg, self.headers)
         yield self.encode_response()
 
