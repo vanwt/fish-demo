@@ -1,6 +1,6 @@
 from typing import List, Callable, Dict
 from functools import wraps
-
+from .request.session import DictSession
 from .router import PathRouter
 from .request import NewRequest
 from .exception import HttpException
@@ -28,42 +28,43 @@ class RouteInf:
 
     """
 
-    def route(self, *args, **kwargs):
+    def route(self, path: str, method: str, parsers=None, response=None, is_re=False):
         pass
 
-    def get(self, path: str, parsers=None, response=None):
-        return self.route(path, "GET", parsers, response)
+    def get(self, path: str, parsers=None, response=None, re=False):
+        return self.route(path, "GET", parsers, response, is_re=re)
 
-    def post(self, path: str, parsers=None, response=None):
-        return self.route(path, "POST", parsers, response)
+    def post(self, path: str, parsers=None, response=None, re=False):
+        return self.route(path, "POST", parsers, response, is_re=re)
 
-    def update(self, path: str, parsers=None, response=None):
-        return self.route(path, "UPDATE", parsers, response)
+    def update(self, path: str, parsers=None, response=None, re=False):
+        return self.route(path, "UPDATE", parsers, response, is_re=re)
 
-    def delete(self, path: str, parsers=None, response=None):
-        return self.route(path, "DELETE", parsers, response)
+    def delete(self, path: str, parsers=None, response=None, re=False):
+        return self.route(path, "DELETE", parsers, response, is_re=re)
 
-    def patch(self, path: str, parsers=None, response=None):
-        return self.route(path, "PATCH", parsers, response)
+    def patch(self, path: str, parsers=None, response=None, re=False):
+        return self.route(path, "PATCH", parsers, response, is_re=re)
 
-    def options(self, path: str, parsers=None, response=None):
-        return self.route(path, "OPTIONS", parsers, response)
+    def options(self, path: str, parsers=None, response=None, re=False):
+        return self.route(path, "OPTIONS", parsers, response, is_re=re)
 
 
 class FishApp(RouteInf):
-    # request_class = Request
     request_class = NewRequest
-    static_url = ""
-    static_path = None
+
     DEBUG = True
     ERROR_LOG = sys.stderr
 
-    def __init__(self):
-        self.routes = PathRouter()
-        self.debug = True
-        self.parser_map: dict = {}
-        self.static_route = None
-        self.static = False
+    def __init__(self, session=DictSession):
+        self._routes = PathRouter()
+
+        # static
+        self._static_route = None
+        self._static_url = "&!#"
+
+        # session
+        self._session_pool = session()
 
     def include_static(self, static_dir_name, static_url="/static"):
         path = os.path.join(os.getcwd(), static_dir_name)
@@ -73,32 +74,22 @@ class FishApp(RouteInf):
         if not os.path.exists(path):
             raise FileNotFoundError("This '{0}' file does not exist".format(static_dir_name))
 
-        self.static_route = StaticRouter(path)
-        self.static_url = static_url
-        self.static = True
+        self._static_route = StaticRouter(path)
+        self._static_url = static_url
 
-    def _add_routes(self, path: str, view: Callable, method: str, parsers: List[Callable], resp_class: Callable):
-        """
-        添加路由
-        :param path: url
-        :param options:  methods 目前只有请求类型
-        :return: None
-        """
-        # check methods
-
+    def route(self, path: str, method: str, parsers=None, response=None, is_re=False):
         if method not in METHODS:
             raise AttributeError("method must in {0!r}".format(METHODS))
-
-        self.routes.set_route(path=path, view_func=view, method=method, resp_class=resp_class, parsers=parsers)
-
-    def route(self, path: str, method: str, parsers, response):
         # 解析器默认只有url解析
-        parsers = parsers if parsers else (UrlParams,)
-        response_class = response if response else Json
+        response = response if response else Json
 
         def add_route(func: Callable):
             # 加入到路由表中
-            self._add_routes(path=path, view=func, method=method, parsers=parsers, resp_class=response_class)
+            if is_re:
+                self._routes.set_route(re_path=path, view_func=func, method=method, resp_class=response,
+                                       parsers=parsers)
+            else:
+                self._routes.set_route(path=path, view_func=func, method=method, resp_class=response, parsers=parsers)
 
             @wraps(func)
             def wrapper():
@@ -110,41 +101,45 @@ class FishApp(RouteInf):
 
     def wsgi(self, environ, start_response):
         # 处理 请求参数
-        request = self.request_class(environ)
+        request = self.request_class(environ, self._session_pool)
 
         # 静态文件
-        if self.static and request.path.startswith(self.static_url):
-            file = self.static_route.check_file(request.path)
-            return self.static_route(file, environ, start_response)
+        if request.path.startswith(self._static_url):
+            file = self._static_route.check_file(request.path)
+            return self._static_route(file, environ, start_response)
 
         try:
-            path_obj = self.routes.get_route(request.path, request.method)
+            path_obj = self._routes.get_route(request.path, request.method)
             # 解析
-            # request.parsing(path_obj.parsers)
+
             request.parsing(path_obj.parsers, environ)
-
+            request.set_path_value(path_obj.temp_vars)
             # 执行 resp类的call
-            resp_data = path_obj.view(request)
-            if isinstance(resp_data, ResponseBase):
-                return resp_data
+            response = path_obj.view(request)
+            if not isinstance(response, ResponseBase):
+                response = path_obj.resp_class(response)
 
-            resp = path_obj.resp_class(resp_data)
-            resp.set_header(request.get_header_param())
+            path_obj.clear()
+            response.set_header(request.get_header_param())
         except Exception as err:
-
-            if isinstance(err, HttpException):
-                resp = HttpErrorResponse(err)
-            else:
-                if self.DEBUG:
-                    exc_type, exc_value, exc_traceback_obj = sys.exc_info()
-                    traceback.print_exception(exc_type, exc_value, exc_traceback_obj, limit=2, file=sys.stderr)
-                    resp = ErrorResponse(err, exc_type)
-                else:
-                    traceback.print_exc(file=self.ERROR_LOG)
-                    resp = ErrorResponse(err)
-
-        return resp(environ, start_response)
+            response = self.get_exception_resp(err)
+        # 设置cookie session
+        finally:
+            del request
+        return response(environ, start_response)
 
     def __call__(self, environ: Dict, start_response: Callable):
 
         return self.wsgi(environ, start_response)
+
+    def get_exception_resp(self, err):
+        if isinstance(err, HttpException):
+            return HttpErrorResponse(err)
+        else:
+            if self.DEBUG:
+                exc_type, exc_value, exc_traceback_obj = sys.exc_info()
+                traceback.print_exception(exc_type, exc_value, exc_traceback_obj, limit=2, file=self.ERROR_LOG)
+                return ErrorResponse(err, exc_type)
+            else:
+                traceback.print_exc(file=self.ERROR_LOG)
+                return ErrorResponse(err)

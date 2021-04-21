@@ -3,7 +3,6 @@ wsgi -> application -> router -> request -> view
 处理 environ 中的参数
 data,method...
 """
-from .session import DictSession
 
 
 def parser_cookie(cookie):
@@ -20,24 +19,24 @@ def parser_cookie(cookie):
     return data
 
 
-session_catch = DictSession()
-
-
 class NewRequest:
-    def __init__(self, environ):
+    def __init__(self, environ, session_poll=None):
         self.path = environ["PATH_INFO"]
         self.method = environ['REQUEST_METHOD'].upper()
         self.data = {}
         self._cookie = environ.get("HTTP_COOKIE", None)
         self.resp_cookie = []
         self.cookie_data = None
-        self._session = session_catch
+        self._session = session_poll
         self.session_id = None
         self.clear_session = False
         self.set_session = False
+        self.vars = []
 
     def parsing(self, parsers, environ):
         """ 根据解析器解析数据 """
+        if not parsers:
+            return None
 
         for parser in parsers:
             p_data = parser("wsgi.input", environ)
@@ -114,3 +113,6 @@ class NewRequest:
             self.resp_cookie.append({"name": "SESSION_ID", "value": "xxxx", "date": 0})
 
         return self.resp_cookie
+
+    def set_path_value(self, value):
+        self.vars = value
